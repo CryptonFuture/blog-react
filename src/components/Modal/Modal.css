@@ -1,0 +1,25 @@
+.btn-blue-color {
+    background-color: grey;
+    border-radius: 10px;
+    box-shadow: 1px 5px 5px 1px lightgray;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-blue-color:hover {
+    background-color: darkgray
+}
+
+.btn-grey-color {
+    background-color: grey;
+    border-radius: 10px;
+    box-shadow: 1px 5px 5px 1px lightgray;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-grey-color:hover {
+    background-color: darkgray
+}
+
+.models {
+    border-radius: 10px;
+}
