@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import './Modal.css'
 import axios from 'axios';
+import { instance } from '../../utils/axiosConfig';
 
 interface LoginData {
     email: string,
@@ -27,7 +28,7 @@ export default function Modal() {
     const login = async (e: any) => {
         e.preventDefault()
         try {
-            const res = await axios.post('http://localhost:8000/api/v1/login', data)
+            const res = await instance.post(`/login`, data)
 
             setData({
                 email: "",
