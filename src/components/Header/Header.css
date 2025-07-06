@@ -4,7 +4,7 @@ header.masthead {
   padding-top: calc(8rem + 57px);
   padding-bottom: 8rem;
   background: no-repeat center center;
-  background-color: #6c757d;
+  background: linear-gradient(#EE82EE,#800080);
   background-size: cover;
   background-attachment: scroll;
 }

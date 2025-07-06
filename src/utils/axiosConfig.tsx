@@ -1,8 +1,11 @@
 import axios from "axios";
 
-const baseUrl = "http://localhost:8000/api/v1"
+const prefix = 'api/v1'
+const baseUrl = `http://localhost:8000/${prefix}`
 
-let headers = {}
+let headers = {
+
+}
 
 export const instance = axios.create({
     baseURL: baseUrl,

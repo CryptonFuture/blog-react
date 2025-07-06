@@ -7,6 +7,7 @@ import Footer from '../../components/Footer/Footer'
 
 export default function Home() {
     const [data, setData] = useState(cardObj)
+    
     return (
         <>
             <Navbar />
