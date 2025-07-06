@@ -1,8 +1,22 @@
 .btn-blue-color {
-    background-color: grey;
+    background: linear-gradient(#EE82EE,#800080);
     border-radius: 10px;
-    box-shadow: 1px 5px 5px 1px lightgray;
+    box-shadow: 1px 5px 25px 1px #DDA0DD;
     transition: all 0.2s ease-in-out;
+    border: 0;
+}
+
+.btn-close-color:hover {
+    background-color: #800080;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-red-color {
+    background: linear-gradient(#EE82EE,#800080);
+    border-radius: 10px;
+    box-shadow: 1px 5px 25px 1px #DDA0DD;
+    transition: all 0.2s ease-in-out;
+    border: 0;
 }
 
 .btn-blue-color:hover {

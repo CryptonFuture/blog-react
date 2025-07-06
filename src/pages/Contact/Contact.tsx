@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import Navbar from '../../components/Navbar/Navbar'
 import Header from '../../components/Header/Header'
 import Footer from '../../components/Footer/Footer'
+import './Contact.css'
 
 
 export default function Contact() {
@@ -47,7 +48,7 @@ export default function Contact() {
                                 <div className="text-danger mt-1">Maximum 200 characters allowed.</div>
                             )}
                             <div className="col-12">
-                                <button type="submit" className="btn btn-secondary border-0 shadow rounded-0">submit</button>
+                                <button type="submit" className="btn btn-purple-color border-0 text-white">submit</button>
                             </div>
                         </form>
                     </div>
