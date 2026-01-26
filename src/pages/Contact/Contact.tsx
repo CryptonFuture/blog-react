@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
 import Navbar from '../../components/Navbar/Navbar'
-import Header from '../../components/Header/Header'
-import Footer from '../../components/Footer/Footer'
+import Header from '../../components/Header/Headers'
+import Footer from '../../components/Footer/Footers'
 import './Contact.css'
+import { Form, Input, Button, Row, Col } from 'antd';
+const { TextArea } = Input;
 
 
 export default function Contact() {
@@ -19,7 +21,7 @@ export default function Contact() {
         <>
             <Navbar />
             <Header />
-            <div className='container'>
+            {/* <div className='container'>
                 <div className='row justify-content-center align-item-center'>
                     <div className='col-12 col-lg-6'>
                         <form className="row g-3">
@@ -53,7 +55,74 @@ export default function Contact() {
                         </form>
                     </div>
                 </div>
+            </div> */}
+            <div style={{ maxWidth: 600, margin: '0 auto', padding: '24px 16px' }}>
+                <Form
+                    layout="vertical"
+                  
+                >
+                    <Row gutter={16}>
+                        <Col span={12}>
+                            <Form.Item
+                                label="Name"
+                                name="name"
+                                rules={[{ required: true, message: 'Please enter your name' }]}
+                            >
+                                <Input placeholder="Enter your name" />
+                            </Form.Item>
+                        </Col>
+
+                        <Col span={12}>
+                            <Form.Item
+                                label="Email"
+                                name="email"
+                                rules={[
+                                    { required: true, message: 'Please enter your email' },
+                                    { type: 'email', message: 'Enter a valid email' }
+                                ]}
+                            >
+                                <Input placeholder="Enter your email" />
+                            </Form.Item>
+                        </Col>
+
+                        <Col span={24}>
+                            <Form.Item
+                                label="Phone Number"
+                                name="phone"
+                                rules={[{ required: true, message: 'Please enter your phone number' }]}
+                            >
+                                <Input placeholder="Enter your phone number" />
+                            </Form.Item>
+                        </Col>
+
+                        <Col span={24}>
+                            <Form.Item
+                                label={`Message (${message.length}/${maxLength})`}
+                                name="message"
+                                rules={[
+                                    { required: true, message: 'Please enter your message' },
+                                    { max: maxLength, message: `Maximum ${maxLength} characters allowed.` }
+                                ]}
+                            >
+                                <TextArea
+                                    rows={3}
+                                    maxLength={maxLength}
+                                    value={message}
+                                    onChange={handleChange}
+                                    showCount
+                                />
+                            </Form.Item>
+                        </Col>
+
+                        <Col span={24} style={{ textAlign: 'right' }}>
+                            <Button type="primary" htmlType="submit">
+                                Submit
+                            </Button>
+                        </Col>
+                    </Row>
+                </Form>
             </div>
+
             <Footer />
         </>
     )
