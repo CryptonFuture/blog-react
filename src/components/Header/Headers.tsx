@@ -1,7 +1,9 @@
 import React from 'react'
 import '../Header/Header.css'
+import { Layout } from 'antd';
+const { Header } = Layout;
 
-export default function Header() {
+export default function Headers() {
   return (
     <>
       <header className="masthead">

@@ -1,6 +1,7 @@
 import React from 'react'
 
-export default function Footer() {
+
+export default function Footers() {
   return (
     <div>
         <footer className="border-top p-4 mt-5">

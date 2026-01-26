@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import Modal from '../Modal/Modal'
+import Modal from '../Modal/Modals'
+import Modals from '../Modal/Modals'
 
 export default function Navbar() {
     return (
@@ -19,7 +20,7 @@ export default function Navbar() {
                             <li className="nav-item"><Link className="nav-link px-lg-3 py-3 py-lg-4">Sample Post</Link></li>
                             <li className="nav-item"><Link to={'/contact-page'} className="nav-link px-lg-3 py-3 py-lg-4">Contact</Link></li>
                             <li className='nav-item nav-link px-lg-3 py-2 py-lg-3'>
-                                <Modal />
+                                <Modals />
                             </li>
                         </ul>
                     </div>
