@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import { Modal, Form, Input } from "antd";
 import { addTag, getTag } from '../../utils/services/tagService';
+import { message } from "antd";
 
 interface AddPostModalProps {
   open: boolean;
@@ -16,13 +17,21 @@ export const AddTagModal: React.FC<AddPostModalProps> = ({ modalOpen, open, onCa
                 const values = await form.validateFields();
                 console.log("Tag Data:", values);
                
-                await addTag(values);
-                
+                const res = await addTag(values);
+
+                message.success(res?.message);
+
+                await getTag()
+
                 form.resetFields();
                 onCancel();
                
-            } catch (error) {
+            } catch (error: any) {
                console.error("Add Tag Error:", error);
+                message.error(
+                    error?.response?.error ||
+                    "Something went wrong, please try again"
+                );
             }
         };
 
