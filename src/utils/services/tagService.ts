@@ -5,7 +5,7 @@ export const addTag = async (payload: any) => {
     const response = await instance.post('/addTag', payload);
     return response.data;
   } catch (error: any) {
-    throw error.response?.data || error;
+    throw error.response?.error || error;
   }
 };
 

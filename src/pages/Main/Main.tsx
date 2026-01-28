@@ -23,6 +23,7 @@ import { Button, Layout, Menu, theme } from 'antd';
 import { Dashboard } from '../Dashboard/Dashboard';
 import { Post } from '../Post/Post';
 import { Tags } from '../Tag/Tags';
+import { Pages } from '../Pages/Pages';
 
 const { Header, Sider, Content } = Layout;
 
@@ -39,7 +40,7 @@ export default function Main() {
       case "1": return <Dashboard />;
       case "2": return <Post />;
       case "3": return <Tags />;
-      // case "4": return <Pages />;
+      case "4": return <Pages />;
       // case "5": return <Users />;
       // case "6": return <Category />;
       // case "7": return <Role />;
