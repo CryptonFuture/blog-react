@@ -9,9 +9,9 @@ export const addTag = async (payload: any) => {
   }
 };
 
-export const getTag = async () => {
+export const getTags = async (page: any, limit: any) => {
   try {
-    const response = await instance.get('/getTag');
+    const response = await instance.get('/getTag', {params: {page, limit}});
     return response.data;
   } catch (error: any) {
     throw error.response?.data || error;

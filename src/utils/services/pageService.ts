@@ -9,9 +9,9 @@ export const addPage = async (payload: any) => {
   }
 };
 
-export const getPage = async () => {
+export const getPages = async (page: any, limit: any) => {
   try {
-    const response = await instance.get('/getPages');
+    const response = await instance.get('/getPages', {params: {page, limit}});
     return response.data;
   } catch (error: any) {
     throw error.response?.data || error;

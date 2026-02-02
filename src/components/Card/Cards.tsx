@@ -2,6 +2,7 @@ import React from 'react'
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, Col } from 'antd';
+import { motion } from "framer-motion";
 
 export default function Cards({ item }: any) {
      const navigate = useNavigate();

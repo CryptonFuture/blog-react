@@ -11,6 +11,7 @@ import { createStyles } from 'antd-style';
 import { Typography } from 'antd';
 import type { ConfigProviderProps } from 'antd';
 import { AddTagModal } from '../../components/Modal/AddTagModal';
+import { getTags } from '../../utils/services/tagService'
 
 type SizeType = ConfigProviderProps['componentSize'];
 
@@ -123,13 +124,8 @@ export const Tags: React.FC<PostProps> = () => {
   ) => {
     setLoading(true);
     try {
-      const res = await instance.get('/getTag', {
-        params: {
-          page,
-          limit,
-        },
-      })
-      setData(res.data.data)
+      const res = await getTags(page, limit)
+      setData(res.data)
 
       setPagination({
         current: res.data.pagination.currentPage,
@@ -303,7 +299,7 @@ export const Tags: React.FC<PostProps> = () => {
     }
   ];
   return (
-    <>
+    <div style={{ padding: 20 }}>
       <Space style={{ width: '100%', justifyContent: 'space-between' }}>
         <Title>Tag</Title>
         <Button onClick={openModal} size={size} type="primary">Add Tag</Button>
@@ -333,6 +329,6 @@ export const Tags: React.FC<PostProps> = () => {
         onCancel={closeModal}
         modalOpen={isModalOpen}
       />
-    </>
+    </div>
   )
 }

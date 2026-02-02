@@ -10,8 +10,6 @@ import type { MenuProps } from 'antd';
 import { createStyles } from 'antd-style';
 import { Typography } from 'antd';
 import type { ConfigProviderProps } from 'antd';
-import { AddPageModal } from '../../components/Modal/AddPageModal';
-import { getPages } from '../../utils/services/pageService';
 
 type SizeType = ConfigProviderProps['componentSize'];
 
@@ -40,9 +38,8 @@ const useStyle = createStyles(({ css, token }) => {
 
 interface DataType {
   key: string;
-  pageName: string;
-  pageUrl: string
-  description: string;
+  username: string;
+  reqInfo: string;
   status: string;
   createdAt: string
 }
@@ -52,31 +49,31 @@ type DataIndex = keyof DataType;
 const actionMenu = (record: DataType): MenuProps => ({
   items: [
     {
+      key: 'approved',
+      label: 'Approved',
+      onClick: () => {
+        console.log('Approved', record);
+      },
+    },
+    {
+      key: 'reject',
+      label: 'Reject',
+      onClick: () => {
+        console.log('Reject', record);
+      },
+    },
+    {
       key: 'view',
       label: 'View',
-      onClick: () => {
-        console.log('View', record);
-      },
-    },
-    {
-      key: 'edit',
-      label: 'Edit',
-      onClick: () => {
-        console.log('Edit', record);
-      },
-    },
-    {
-      key: 'delete',
-      label: 'Delete',
       danger: true,
       onClick: () => {
-        console.log('Delete', record);
+        console.log('View', record);
       },
     },
   ],
 });
 
-export const Pages: React.FC<PostProps> = () => {
+export const Request: React.FC<PostProps> = () => {
      const [size, setSize] = useState<SizeType>('large');
     
       const [searchText, setSearchText] = useState('');
@@ -119,14 +116,19 @@ export const Pages: React.FC<PostProps> = () => {
         setSearchText('');
       };
     
-      const getPage = async (
+      const getRequest = async (
         page = pagination.current,
         limit = pagination.pageSize
       ) => {
         setLoading(true);
         try {
-         const res = await getPages(page, limit)
-          setData(res.data)
+          const res = await instance.get('/getActiveRequest', {
+            params: {
+              page,
+              limit,
+            },
+          })
+          setData(res.data.data)
     
           setPagination({
             current: res.data.pagination.currentPage,
@@ -144,11 +146,11 @@ export const Pages: React.FC<PostProps> = () => {
       }
     
       useEffect(() => {
-        getPage()
+        getRequest()
       }, []);
     
       const handleTableChange = (paginationInfo: any) => {
-        getPage(paginationInfo.current, paginationInfo.pageSize);
+        getRequest(paginationInfo.current, paginationInfo.pageSize);
       };
     
       const getColumnSearchProps = (dataIndex: DataIndex): TableColumnType<DataType> => ({
@@ -240,27 +242,24 @@ export const Pages: React.FC<PostProps> = () => {
             (currentPage - 1) * pageSize + index + 1,
         },
         {
-          title: 'Page Name',
-          dataIndex: 'pageName',
-          key: 'pageName',
+          title: 'User Name',
+          dataIndex: 'username',
+          key: 'username',
           //   width: '20%',
-          ...getColumnSearchProps('pageName'),
-          sorter: (a, b) => a.pageName.length - b.pageName.length,
+          ...getColumnSearchProps('username'),
+          sorter: (a, b) => a.username.length - b.username.length,
           sortDirections: ['descend', 'ascend'],
     
         },
-
-         {
-          title: 'Page Url',
-          dataIndex: 'pageUrl',
-          key: 'pageUrl',
+        {
+          title: 'Req Info',
+          dataIndex: 'reqInfo',
+          key: 'reqInfo',
           //   width: '20%',
-          ...getColumnSearchProps('pageUrl'),
-          sorter: (a, b) => a.pageUrl.length - b.pageUrl.length,
-          sortDirections: ['descend', 'ascend'],
-    
+          ...getColumnSearchProps('reqInfo'),
+          sorter: (a, b) => a.reqInfo.length - b.reqInfo.length,
+          sortDirections: ['descend', 'ascend']
         },
-
         {
           title: 'Status',
           dataIndex: 'status',
@@ -303,12 +302,10 @@ export const Pages: React.FC<PostProps> = () => {
         }
       ];
   return (
-        <div style={{ padding: 20 }}>
+       <div style={{ padding: 20 }}>
 
-    
           <Space style={{ width: '100%', justifyContent: 'space-between' }}>
-              <Title>Page</Title>
-              <Button onClick={openModal} size={size} type="primary">Add Page</Button>
+              <Title>Request</Title>
           </Space>
           {/* <Divider>Tag</Divider> */}
           <Table<DataType>
@@ -330,11 +327,6 @@ export const Pages: React.FC<PostProps> = () => {
 
               scroll={{ y: 70 * 5 }}
           />
-           <AddPageModal
-                  open={isModalOpen}
-                  onCancel={closeModal}
-                  modalOpen={isModalOpen}
-                />
-          </div>
+         </div>
   )
 }

@@ -1,7 +1,9 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import Modal from '../Modal/Modals'
+
 import Modals from '../Modal/Modals'
+import { SignedIn, SignIn, SignUp, SignedOut, SignInButton, UserButton } from '@clerk/clerk-react';
 
 export default function Navbar() {
     return (
@@ -21,6 +23,16 @@ export default function Navbar() {
                             <li className="nav-item"><Link to={'/contact-page'} className="nav-link px-lg-3 py-3 py-lg-4">Contact</Link></li>
                             <li className='nav-item nav-link px-lg-3 py-2 py-lg-3'>
                                 <Modals />
+                            </li>
+                            <li className='nav-item nav-link px-lg-3 py-2 py-lg-3'>
+                                {/* <SignedOut>
+                                    <SignInButton />
+                                </SignedOut>
+                                <SignedIn>
+                                    <UserButton />
+                                </SignedIn> */}
+
+                                
                             </li>
                         </ul>
                     </div>
