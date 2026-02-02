@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import { Modal, Form, Input } from "antd";
-import { addTag, getTag } from '../../utils/services/tagService';
+import { addTag, getTags } from '../../utils/services/tagService';
 import { message } from "antd";
 
 interface AddPostModalProps {
@@ -21,7 +21,7 @@ export const AddTagModal: React.FC<AddPostModalProps> = ({ modalOpen, open, onCa
 
                 message.success(res?.message);
 
-                await getTag()
+                // await getTags()
 
                 form.resetFields();
                 onCancel();

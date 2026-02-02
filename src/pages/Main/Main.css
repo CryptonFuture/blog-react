@@ -1,0 +1,31 @@
+/* Sidebar selected item */
+.ant-menu-dark .ant-menu-item-selected {
+  background-color: rgba(24, 144, 255, 0.35) !important; /* blue with opacity */
+}
+
+/* Icon color for selected item */
+.ant-menu-dark .ant-menu-item-selected .anticon {
+  color: #ffffff !important;
+}
+
+/* Text color for selected item */
+.ant-menu-dark .ant-menu-item-selected span {
+  color: #ffffff !important;
+}
+
+
+
+/* :root {
+  --sidebar-blue-start: #1B59F8;
+  --sidebar-blue-end: #0F3CC9;
+}
+
+.ant-layout-sider,
+.ant-menu-dark {
+  background: linear-gradient(
+    -180deg,
+    var(--sidebar-blue-start) 0%,
+    var(--sidebar-blue-end) 100%
+  ) !important;
+} */
+

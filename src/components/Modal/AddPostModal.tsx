@@ -1,6 +1,6 @@
 import React from 'react'
 import { Modal, Form, Input } from "antd";
-import { addPost, getPost } from '../../utils/services/postService';
+import { addPost, getPublishedPost } from '../../utils/services/postService';
 
 interface AddPostModalProps {
   open: boolean;
@@ -16,7 +16,7 @@ export const AddPostModal: React.FC<AddPostModalProps> = ({ open, onCancel }) =>
             console.log("Post Data:", values);
              onCancel();
             await addPost(values);
-            await getPost()
+            // await getPublishedPost()
             form.resetFields();
            
         } catch (error) {

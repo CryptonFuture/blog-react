@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import Navbar from '../../components/Navbar/Navbar'
 import { cardObj } from '../../utils/cardObj'
-import { Row, Col, Layout } from 'antd';
+import { Row, Col, Layout, Empty, Typography, ConfigProvider } from 'antd';
 import Cards from '../../components/Card/Cards'
 import Footers from '../../components/Footer/Footers'
 import Headers from '../../components/Header/Headers';
