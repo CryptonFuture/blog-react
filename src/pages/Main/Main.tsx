@@ -30,8 +30,9 @@ import { Users } from '../Users/Users';
 import { Request } from '../Request/Request'
 import { ContactUs } from '../ContactUs/ContactUs'
 import './Main.css'
+import { Permission } from '../Permission/Permission';
 
-const { Header, Sider, Content, Footer } = Layout;
+const { Header, Sider, Content, Footer } = Layout
 
 export default function Main() {
   const [darkMode, setDarkMode] = useState(false);
@@ -82,7 +83,7 @@ export default function Main() {
       // case "7": return <Role />;
       // case "8": return <Profile />;
       // case "9": return <Settings />;
-      // case "10": return <Permission />;
+      case "10": return <Permission />;
       case "11": return <Request />;
       case "12": return <ContactUs />;
       // case "13": return <Comment />;
@@ -136,7 +137,7 @@ export default function Main() {
             // { key: "7", icon: <SafetyCertificateOutlined />, label: "Role" },
             // { key: "8", icon: <UserOutlined />, label: "Profile" },
             // { key: "9", icon: <SettingOutlined />, label: "Settings" },
-            { key: "10", icon: <KeyOutlined />, label: "Permission" },
+            { key: "10", icon: <KeyOutlined />, label: "OnBoarding" },
             { key: "11", icon: <InboxOutlined />, label: "Request" },
             { key: "12", icon: <PhoneOutlined />, label: "Contact Us" },
             { key: "13", icon: <MessageOutlined />, label: "Comment" },
@@ -221,6 +222,18 @@ export default function Main() {
         >
           {renderComponent()}
         </Content>
+
+        <Footer
+          style={{
+            textAlign: "center",
+            margin: 16,
+            borderRadius: 12,
+            background: colorBgContainer,
+            boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+          }}
+        >
+          © {new Date().getFullYear()} MyApp. All rights reserved.
+        </Footer>
         
       </Layout>
     </Layout>
