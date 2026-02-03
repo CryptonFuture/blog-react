@@ -69,10 +69,6 @@ const postActions: ActionItem<Post>[] = [
     },
   ]
 
-
-
-
-
 export const Posts: React.FC<PostProps> = () => {
   const { getColumnSearchProps } = useColumnSearch<Post>();
 
@@ -150,7 +146,7 @@ export const Posts: React.FC<PostProps> = () => {
         onChange={handleTableChange}
         rowKey="key"
         className={styles.customTable}
-      />;
+      />
 
       <AddPostModal
         open={isModalOpen}

@@ -12,6 +12,11 @@ import { Typography } from 'antd';
 import type { ConfigProviderProps } from 'antd';
 import { AddTagModal } from '../../components/Modal/AddTagModal';
 import { getTags } from '../../utils/services/tagService'
+import type { Taged } from '../../utils/Interface/Tag';
+import type { ActionItem } from '../../components/Menu/ActionMenu';
+import { ReusableTable } from '../../components/Table/ReusableTable';
+import { tagColumns } from '../../components/useColumn/tagColumns';
+import { useColumnSearch } from '../../components/useColumn/useColumnSearch';
 
 type SizeType = ConfigProviderProps['componentSize'];
 
@@ -38,29 +43,19 @@ const useStyle = createStyles(({ css, token }) => {
   };
 });
 
-interface DataType {
-  key: string;
-  tagName: string;
-  description: string;
-  status: string;
-  createdAt: string
-}
-
-type DataIndex = keyof DataType;
-
-const actionMenu = (record: DataType): MenuProps => ({
-  items: [
+const tagActions: ActionItem<Taged>[] = [
+ 
     {
       key: 'view',
       label: 'View',
-      onClick: () => {
+      onClick: (record) => {
         console.log('View', record);
       },
     },
     {
       key: 'edit',
       label: 'Edit',
-      onClick: () => {
+      onClick: (record) => {
         console.log('Edit', record);
       },
     },
@@ -68,19 +63,21 @@ const actionMenu = (record: DataType): MenuProps => ({
       key: 'delete',
       label: 'Delete',
       danger: true,
-      onClick: () => {
+      onClick: (record) => {
         console.log('Delete', record);
       },
     },
-  ],
-});
+  ]
+
 
 export const Tags: React.FC<PostProps> = () => {
+  const { getColumnSearchProps } = useColumnSearch<Taged>();
+  
   const [size, setSize] = useState<SizeType>('large');
 
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
-  const [data, setData] = useState<DataType[]>([]);
+  const [data, setData] = useState<[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const searchInput = useRef<InputRef>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -100,23 +97,6 @@ export const Tags: React.FC<PostProps> = () => {
 
   const { styles } = useStyle();
 
-  const pageSize = pagination.pageSize;
-  const currentPage = pagination.current;
-
-  const handleSearch = (
-    selectedKeys: string[],
-    confirm: FilterDropdownProps['confirm'],
-    dataIndex: DataIndex,
-  ) => {
-    confirm();
-    setSearchText(selectedKeys[0]);
-    setSearchedColumn(dataIndex);
-  };
-
-  const handleReset = (clearFilters: () => void) => {
-    clearFilters();
-    setSearchText('');
-  };
 
   const getTag = async (
     page = pagination.current,
@@ -150,154 +130,6 @@ export const Tags: React.FC<PostProps> = () => {
     getTag(paginationInfo.current, paginationInfo.pageSize);
   };
 
-  const getColumnSearchProps = (dataIndex: DataIndex): TableColumnType<DataType> => ({
-    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
-      <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
-        <Input
-          ref={searchInput}
-          placeholder={`Search ${dataIndex}`}
-          value={selectedKeys[0]}
-          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-          onPressEnter={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
-          style={{ marginBottom: 8, display: 'block' }}
-        />
-        <Space>
-          <Button
-            type="primary"
-            onClick={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
-            icon={<SearchOutlined />}
-            size="small"
-            style={{ width: 90 }}
-          >
-            Search
-          </Button>
-          <Button
-            onClick={() => clearFilters && handleReset(clearFilters)}
-            size="small"
-            style={{ width: 90 }}
-          >
-            Reset
-          </Button>
-          <Button
-            type="link"
-            size="small"
-            onClick={() => {
-              confirm({ closeDropdown: false });
-              setSearchText((selectedKeys as string[])[0]);
-              setSearchedColumn(dataIndex);
-            }}
-          >
-            Filter
-          </Button>
-          <Button
-            type="link"
-            size="small"
-            onClick={() => {
-              close();
-            }}
-          >
-            close
-          </Button>
-        </Space>
-      </div>
-    ),
-    filterIcon: (filtered: boolean) => (
-      <SearchOutlined style={{ color: filtered ? '#1677ff' : undefined }} />
-    ),
-    onFilter: (value, record) =>
-      record[dataIndex]
-        .toString()
-        .toLowerCase()
-        .includes((value as string).toLowerCase()),
-    filterDropdownProps: {
-      onOpenChange(open) {
-        if (open) {
-          setTimeout(() => searchInput.current?.select(), 100);
-        }
-      },
-    },
-    render: (text) =>
-      searchedColumn === dataIndex ? (
-        <Highlighter
-          highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
-          searchWords={[searchText]}
-          autoEscape
-          textToHighlight={text ? text.toString() : ''}
-        />
-      ) : (
-        text
-      ),
-  });
-
-  const columns: TableColumnsType<DataType> = [
-    {
-      title: 'S.No',
-      key: 'sno',
-      width: 70,
-      align: 'center',
-      render: (_: any, __: any, index: number) =>
-        (currentPage - 1) * pageSize + index + 1,
-    },
-    {
-      title: 'Tag Name',
-      dataIndex: 'tagName',
-      key: 'tagName',
-      //   width: '20%',
-      ...getColumnSearchProps('tagName'),
-      sorter: (a, b) => a.tagName.length - b.tagName.length,
-      sortDirections: ['descend', 'ascend'],
-
-    },
-    {
-      title: 'Description',
-      dataIndex: 'description',
-      key: 'description',
-      //   width: '20%',
-      ...getColumnSearchProps('description'),
-      sorter: (a, b) => a.description.length - b.description.length,
-      sortDirections: ['descend', 'ascend']
-    },
-    {
-      title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
-      render: (value: boolean) => (
-        <Tag color={value ? 'green' : 'red'}>
-          {value ? 'Active' : 'InActive'}
-        </Tag>
-      ),
-      //    width: '20%',
-      //   ...getColumnSearchProps('status'),
-      sorter: (a, b) => a.status.length - b.status.length,
-      sortDirections: ['descend', 'ascend'],
-
-    },
-
-    {
-      title: 'Created At',
-      dataIndex: 'createdAt',
-      key: 'createdAt',
-      //   width: '20%',
-      //   ...getColumnSearchProps('createdAt'),
-      sorter: (a, b) => a.createdAt.length - b.createdAt.length,
-      sortDirections: ['descend', 'ascend'],
-      render: (createdAt: string) => moment(createdAt).format("MM-DD-YYYY")
-    },
-
-    {
-      title: 'Actions',
-      key: 'actions',
-      align: 'center',
-      render: (_, record) => (
-        <Dropdown menu={actionMenu(record)} trigger={['click']}>
-          <Button
-            type="text"
-            icon={<MoreOutlined style={{ fontSize: 18 }} />}
-          />
-        </Dropdown>
-      ),
-    }
-  ];
   return (
     <div style={{ padding: 20 }}>
       <Space style={{ width: '100%', justifyContent: 'space-between' }}>
@@ -305,25 +137,21 @@ export const Tags: React.FC<PostProps> = () => {
         <Button onClick={openModal} size={size} type="primary">Add Tag</Button>
       </Space>
       {/* <Divider>Tag</Divider> */}
-      <Table<DataType>
-        style={{ marginTop: 10 }}
-        className={styles.customTable}
-        columns={columns}
-        dataSource={data}
-        loading={loading}
-        pagination={{
-          current: pagination.current,
-          pageSize: pagination.pageSize,
-          total: pagination.total,
-          showSizeChanger: true,  
-          pageSizeOptions: ['5', '10', '20', '50'],
-        }}
-        onChange={handleTableChange}
-        rowKey="key"
-        bordered
-
-        scroll={{ y: 70 * 5 }}
-      />
+     <ReusableTable<Taged>
+             columns={tagColumns(
+               getColumnSearchProps,
+               pagination.current!,
+               pagination.pageSize!,
+               tagActions
+             )}
+             data={data}
+             loading={loading}
+             pagination={pagination}
+             onChange={handleTableChange}
+             rowKey="key"
+             className={styles.customTable}
+           />
+     
       <AddTagModal
         open={isModalOpen}
         onCancel={closeModal}
