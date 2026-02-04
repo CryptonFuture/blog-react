@@ -1,5 +1,9 @@
 import React from 'react'
 import { Tabs } from 'antd';
+import { ActiveUser } from '../../pages/ActiveUser/ActiveUser';
+import { InActiveUser } from '../../pages/InActiveUser/InActiveUser';
+import { Role } from '../../pages/Role/Role';
+import { Action } from '../../pages/Action/Action';
 
 const onChange = (key: string) => {
   console.log(key);
@@ -16,22 +20,22 @@ export const Tab: React.FC = () => {
         {
           label: "Active User",
           key: "active",
-          children: "Content of Active User",
+          children: <ActiveUser />,
         },
         {
           label: "Inactive User",
           key: "inactive",
-          children: "Content of Inactive User",
+          children: <InActiveUser />,
         },
         {
           label: "Role",
           key: "role",
-          children: "Content of Role",
+          children: <Role />,
         },
         {
           label: "Action",
           key: "action",
-          children: "Content of Action",
+          children: <Action />,
         },
       ]}
     />
