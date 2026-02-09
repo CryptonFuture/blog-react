@@ -1,18 +1,27 @@
 import React from 'react'
+import { Layout, theme } from 'antd';
+
+const { Footer } = Layout
+
 
 
 export default function Footers() {
+    const {
+        token: { colorBgContainer },
+    } = theme.useToken();
   return (
-    <div>
-        <footer className="border-top p-4 mt-5">
-            <div className="container px-4 px-lg-5">
-                <div className="row gx-4 gx-lg-5 justify-content-center">
-                    <div className="col-md-10 col-lg-8 col-xl-7">
-                        <div className="small text-center text-muted fst-italic">Copyright &copy; Your Website 2023</div>
-                    </div>
-                </div>
-            </div>
-        </footer>
-    </div>
+    <>
+       <Footer
+          style={{
+            textAlign: "center",
+            margin: 16,
+            borderRadius: 50,
+            background: colorBgContainer,
+            boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+          }}
+        >
+          © {new Date().getFullYear()} MyApp. All rights reserved.
+        </Footer>
+    </>
   )
 }

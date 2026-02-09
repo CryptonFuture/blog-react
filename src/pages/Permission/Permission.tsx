@@ -13,9 +13,10 @@ import type { ConfigProviderProps } from 'antd';
 import { ReusableTable } from "../../components/Table/ReusableTable";
 import { useColumnSearch } from "../../components/useColumn/useColumnSearch";
 import type { ActionItem } from "../../components/Menu/ActionMenu";
-import type { Pemission } from '../../utils/Interface/permission'
+import type { Pemission } from '../../utils/Interface/Permission'
 import { permissionColumns } from "../../components/useColumn/permissionColumns";
 import { AddPermissionModal } from '../../components/Modal/AddPermissionModal';
+import { getOnBoardingUser } from '../../utils/services/onBoardingService'
 
 type SizeType = ConfigProviderProps['componentSize'];
 
@@ -72,7 +73,7 @@ export const Permission: React.FC<PostProps> = () => {
       const { getColumnSearchProps } = useColumnSearch<Pemission>();
     
      const [size, setSize] = useState<SizeType>('large'); 
-      const [data, setData] = useState<Pemission[]>([]);
+      const [data, setData] = useState<any[]>([]);
       const [loading, setLoading] = useState<boolean>(false);
       const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
       const [pagination, setPagination] = useState({
@@ -91,8 +92,27 @@ export const Permission: React.FC<PostProps> = () => {
     
       const { styles } = useStyle();
 
+      const getOnBoardingUsers = async () => {
+          setLoading(true);
+          try {
+            const res = await getOnBoardingUser()
+            setData(res.data)   
+      
+          } catch (error) {
+              console.error("Failed to fetch posts:", error);
+          }
+          finally {
+            setLoading(false);
+          }
+         
+        }
+      
+         useEffect(() => {
+              getOnBoardingUsers()
+        }, []);
+
     const handleTableChange = (paginationInfo: any) => {
-        // getPost(paginationInfo.current, paginationInfo.pageSize);
+        getOnBoardingUser();
     };
    
   return (

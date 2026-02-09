@@ -1,20 +1,34 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Steps, Button, Table, Checkbox, Modal, Form, Input, Select, Row, Col } from 'antd';
 import type { StepsProps } from 'antd';
+import { addOnBoardingUser } from '../../utils/services/onBoardingService';
+import { getSidebars } from '../../utils/services/sidebarService';
 
 const { Option } = Select;
-
-
 
 interface AddPermissionModalProps {
   open: boolean;
   onCancel: () => void;
 }
 
+interface Permission {
+  id: string;
+  group: string;
+  add: boolean;
+  update: boolean;
+  view: boolean;
+  delete: boolean;
+  full: boolean;
+}
+
 interface PersonalInfoForm {
   userId: string;
   username: string;
   email: string;
+  country: string;
+  state: string;
+  city: string;
+  zipCode: string;
   password: string;
   confirmPassword: string;
   userType: string;
@@ -24,6 +38,7 @@ interface PersonalInfoForm {
   address2?: string;
 }
 
+
 export const AddPermissionModal: React.FC<AddPermissionModalProps> = ({
   open,
   onCancel,
@@ -31,6 +46,67 @@ export const AddPermissionModal: React.FC<AddPermissionModalProps> = ({
   const [current, setCurrent] = useState<number>(0);
   const [form] = Form.useForm<PersonalInfoForm>();
 
+  const countryData: any = {
+    pakistan: ['Punjab', 'Sindh'],
+    usa: ['California', 'Texas'],
+    uk: ['England', 'Scotland'],
+  };
+
+  const cityData: any = {
+    Punjab: ['Lahore', 'Faisalabad'],
+    Sindh: ['Karachi', 'Hyderabad'],
+    California: ['Los Angeles', 'San Diego'],
+    Texas: ['Houston', 'Dallas'],
+  };
+
+  const zipCodeData: any = {
+    Lahore: ['54000', '54100'],
+    Karachi: ['74000', '74100'],
+    'Los Angeles': ['90001', '90002'],
+  };
+
+  const [stateOptions, setStateOptions] = useState([]);
+  const [cityOptions, setCityOptions] = useState([]);
+  const [zipOptions, setZipOptions] = useState([]);
+
+  const [permissionData, setPermissionData] = useState<Permission []>([
+    { id: "1", group: 'Post', add: false, update: false, view: false, delete: false, full: false },
+    { id: "2", group: 'Tag', add: false, update: false, view: false, delete: false, full: false },
+    { id: "3", group: 'Pages', add: false, update: false, view: false, delete: false, full: false },
+    { id: "4", group: 'Category', add: false, update: false, view: false, delete: false, full: false },
+    { id: "5", group: 'Request', add: false, update: false, view: false, delete: false, full: false },
+    { id: "6", group: 'Contact Us', add: false, update: false, view: false, delete: false, full: false },
+    { id: "7", group: 'Comment', add: false, update: false, view: false, delete: false, full: false },
+  ]);
+
+  const onCountryChange = (value: any) => {
+    setStateOptions(countryData[value] || []);
+    setCityOptions([]);
+    setZipOptions([]);
+
+    form.setFieldsValue({
+      state: undefined,
+      city: undefined,
+      zipCode: undefined,
+    });
+  };
+
+  const onStateChange = (value: any) => {
+    setCityOptions(cityData[value] || []);
+    setZipOptions([]);
+
+    form.setFieldsValue({
+      city: undefined,
+      zipCode: undefined,
+    });
+  };
+
+  const onCityChange = (value: any) => {
+    setZipOptions(zipCodeData[value] || []);
+    form.setFieldsValue({ zipCode: undefined });
+  };
+
+ 
   const steps: StepsProps['items'] = [
     {
       title: 'Personal Info',
@@ -40,89 +116,102 @@ export const AddPermissionModal: React.FC<AddPermissionModalProps> = ({
     },
   ];
 
+
   const handleNext = async () => {
     try {
       await form.validateFields();
       setCurrent(1);
     } catch {
-      // validation error
     }
   };
   
 
  const handleFinish = async () => {
   try {
-    // Get all form values from Step 0
-    const formValues = await form.validateFields();
+    const values = await form.validateFields([
+      'userId',
+      'username',
+      'email',
+      'country',
+      'state',
+      'city',
+      'zipCode',
+      'phoneNo',
+      'password',
+      'confirmPassword',
+      'userType',
+      'department',
+      'address1',
+      'address2'
+    ]);
 
-    // Combine with Step 1 permission data
-    const finalData = {
-      ...formValues,
-      permissions: permissionData, // array from Step 1
+    const payload = {
+      user: values,
+      permissions: permissionData,
     };
 
-    console.log('FINAL DATA:', finalData);
+    const res = await addOnBoardingUser(payload)
 
-    // Reset everything
-    setCurrent(0);
-    form.resetFields();
-    setPermissionData((prev) =>
-      prev.map((item) => ({
-        ...item,
-        add: false,
-        update: false,
-        view: false,
-        delete: false,
-        full: false,
-        subPermission1: false,
-        subPermission2: false,
-      }))
-    );
+    console.log(res.data);
+    
+    console.log('FINAL DATA:', payload);
 
-    // Close modal
     onCancel();
+    form.resetFields();
+    setPermissionData([]);
+    setCurrent(0);
+
   } catch (errorInfo) {
     console.log('Validation Failed:', errorInfo);
   }
 };
 
+const handlePermissionChange = (id: any, key: string, value: boolean) => {
+  setPermissionData(prev =>
+    prev.map(item => {
+      if (item.id !== id) return item;
 
-  const stateOptions = ['California', 'Texas', 'New York', 'Florida'];
-  const cityOptions = {
-    California: ['Los Angeles', 'San Francisco', 'San Diego'],
-    Texas: ['Houston', 'Dallas', 'Austin'],
-    'New York': ['New York City', 'Buffalo', 'Albany'],
-    Florida: ['Miami', 'Orlando', 'Tampa'],
-  };
-  const zipCodeOptions = {
-    'Los Angeles': ['90001', '90002', '90003'],
-    'San Francisco': ['94101', '94102', '94103'],
-    Houston: ['77001', '77002', '77003'],
-    Dallas: ['75201', '75202', '75203'],
-    // Add more mappings as needed
-  };
+      let updatedItem = {
+        ...item,
+        [key]: value
+      };
 
-  const [permissionData, setPermissionData] = useState([
-  { id: 1, group: 'Post', add: false, update: false, view: false, delete: false, full: false },
-  { id: 2, group: 'Tag', add: false, update: false, view: false, delete: false, full: false },
-  { id: 3, group: 'Pages', add: false, update: false, view: false, delete: false, full: false },
-  { id: 4, group: 'Category', add: false, update: false, view: false, delete: false, full: false },
-  { id: 5, group: 'Request', add: false, update: false, view: false, delete: false, full: false },
-  { id: 6, group: 'Contact Us', add: false, update: false, view: false, delete: false, full: false },
-  { id: 7, group: 'Comment', add: false, update: false, view: false, delete: false, full: false }
+      if ((key === 'add' || key === 'update' || key === 'delete') && value) {
+        updatedItem.view = true;
+      }
 
-  // add more groups as needed
-]);
+      if ((key === 'add' || key === 'update' || key === 'delete') && !value) {
+        const hasAnyPermission =
+          updatedItem.add || updatedItem.update || updatedItem.delete;
 
-const handlePermissionChange = (id: any, field: any, value: any) => {
-  setPermissionData((prev) =>
-    prev.map((item) =>
-      item.id === id ? { ...item, [field]: value } : item
-    )
+        if (!hasAnyPermission) {
+          updatedItem.view = false;
+        }
+      }
+
+      if (key === 'view' && !value) {
+        updatedItem.add = false;
+        updatedItem.update = false;
+        updatedItem.delete = false;
+      }
+
+      const isFull =
+        updatedItem.add &&
+        updatedItem.update &&
+        updatedItem.view &&
+        updatedItem.delete;
+
+      return {
+        ...updatedItem,
+        full: isFull
+      };
+    })
   );
 };
 
-// If Full Access is checked, set all checkboxes for that row to true
+
+
+
 const handleFullAccessChange = (id: any, value: any) => {
   setPermissionData((prev) =>
     prev.map((item) =>
@@ -132,6 +221,43 @@ const handleFullAccessChange = (id: any, value: any) => {
     )
   );
 };
+
+const fetchSidebarPermissions = async () => {
+  try {
+    const res = await getSidebars();
+
+    const hiddenModules = [
+      'logs',
+      'logs configuration',
+      'dashboard',
+      'iam',
+      'onboarding',
+    ];
+
+    const formattedPermissions = res.data
+      .filter((item: any) =>
+        !hiddenModules.includes(item.name?.toLowerCase())
+      )
+      .map((item: any) => ({
+        id: item.id,
+        group: item.name,
+        add: false,
+        update: false,
+        view: false,
+        delete: false,
+        full: false,
+      }));
+
+    setPermissionData(formattedPermissions);
+  } catch (error) {
+    console.error('Failed to load sidebar permissions', error);
+  }
+};
+
+useEffect(() => {
+  fetchSidebarPermissions()
+}, [])
+
 
 
   return (
@@ -147,7 +273,6 @@ const handleFullAccessChange = (id: any, value: any) => {
     >
       <Steps current={current} items={steps} style={{ marginBottom: 24 }} />
 
-      {/* STEP CONTENT */}
       {current === 0 && (
         <Form
           form={form}
@@ -159,7 +284,9 @@ const handleFullAccessChange = (id: any, value: any) => {
               <Form.Item
                 label="User ID"
                 name="userId"
+               
                 rules={[{ required: true, message: 'User ID is required' }]}
+                
               >
                 <Input placeholder="Enter user ID" />
               </Form.Item>
@@ -188,14 +315,13 @@ const handleFullAccessChange = (id: any, value: any) => {
               </Form.Item>
             </Col>
 
-            {/* Country */}
             <Col span={12}>
               <Form.Item
                 label="Country"
                 name="country"
                 rules={[{ required: true, message: 'Country is required' }]}
               >
-                <Select placeholder="Select country">
+                <Select placeholder="Select country" onChange={onCountryChange}>
                   <Select.Option value="pakistan">Pakistan</Select.Option>
                   <Select.Option value="usa">USA</Select.Option>
                   <Select.Option value="uk">UK</Select.Option>
@@ -203,54 +329,37 @@ const handleFullAccessChange = (id: any, value: any) => {
               </Form.Item>
             </Col>
 
-            {/* State */}
             <Col span={12}>
-              <Form.Item
-                label="State"
-                name="state"
-                rules={[{ required: true, message: 'State is required' }]}
-              >
-                <Select placeholder="Select state">
+              <Form.Item label="State" name="state">
+                <Select placeholder="Select state" onChange={onStateChange}>
                   {stateOptions.map((state) => (
-                    <Option key={state} value={state}>
+                    <Select.Option key={state} value={state}>
                       {state}
-                    </Option>
+                    </Select.Option>
                   ))}
                 </Select>
               </Form.Item>
             </Col>
 
-            {/* City */}
             <Col span={12}>
-              <Form.Item
-                label="City"
-                name="city"
-                rules={[{ required: true, message: 'City is required' }]}
-              >
-                <Select placeholder="Select city">
-                  {/* You can dynamically load cities based on selected state */}
-                  {cityOptions['California'].map((city) => (
-                    <Option key={city} value={city}>
+              <Form.Item label="City" name="city">
+                <Select placeholder="Select city" onChange={onCityChange}>
+                  {cityOptions.map((city) => (
+                    <Select.Option key={city} value={city}>
                       {city}
-                    </Option>
+                    </Select.Option>
                   ))}
                 </Select>
               </Form.Item>
             </Col>
 
-            {/* Zip Code */}
             <Col span={12}>
-              <Form.Item
-                label="Zip Code"
-                name="zipCode"
-                rules={[{ required: true, message: 'Zip code is required' }]}
-              >
+              <Form.Item label="Zip Code" name="zipCode">
                 <Select placeholder="Select zip code">
-                  {/* You can dynamically load zip codes based on selected city */}
-                  {zipCodeOptions['Los Angeles'].map((zip) => (
-                    <Option key={zip} value={zip}>
+                  {zipOptions.map((zip) => (
+                    <Select.Option key={zip} value={zip}>
                       {zip}
-                    </Option>
+                    </Select.Option>
                   ))}
                 </Select>
               </Form.Item>
@@ -273,7 +382,7 @@ const handleFullAccessChange = (id: any, value: any) => {
                 rules={[{ required: true, message: 'Password is required' }]}
                 hasFeedback
               >
-                <Input.Password placeholder="Enter password" />
+                <Input.Password  placeholder="Enter password" />
               </Form.Item>
             </Col>
 
@@ -349,10 +458,10 @@ const handleFullAccessChange = (id: any, value: any) => {
 
       {current === 1 && (
         <Table
-          rowKey="id"
+          rowKey={(record) => record.id || Math.random()} 
           pagination={false}
-          dataSource={permissionData} // your permission array
-          scroll={{ y: 400 }} // scroll if table is long
+          dataSource={permissionData} 
+          scroll={{ y: 400 }} 
           bordered
           
         >
@@ -364,7 +473,7 @@ const handleFullAccessChange = (id: any, value: any) => {
             render={(text, record) => (
               <Checkbox
                 checked={record.add}
-                onChange={(e) => handlePermissionChange(record.id, 'add', e.target.checked)}
+                onChange={(e) => record.id && handlePermissionChange(record.id, 'add', e.target.checked)}
               />
             )}
           />
@@ -375,7 +484,7 @@ const handleFullAccessChange = (id: any, value: any) => {
             render={(text, record) => (
               <Checkbox
                 checked={record.update}
-                onChange={(e) => handlePermissionChange(record.id, 'update', e.target.checked)}
+                onChange={(e) => record.id && handlePermissionChange(record.id, 'update', e.target.checked)}
               />
             )}
           />
@@ -386,7 +495,7 @@ const handleFullAccessChange = (id: any, value: any) => {
             render={(text, record) => (
               <Checkbox
                 checked={record.view}
-                onChange={(e) => handlePermissionChange(record.id, 'view', e.target.checked)}
+                onChange={(e) => record.id && handlePermissionChange(record.id, 'view', e.target.checked)}
               />
             )}
           />
@@ -397,7 +506,7 @@ const handleFullAccessChange = (id: any, value: any) => {
             render={(text, record) => (
               <Checkbox
                 checked={record.delete}
-                onChange={(e) => handlePermissionChange(record.id, 'delete', e.target.checked)}
+                onChange={(e) => record.id && handlePermissionChange(record.id, 'delete', e.target.checked)}
               />
             )}
           />
@@ -416,7 +525,6 @@ const handleFullAccessChange = (id: any, value: any) => {
       )}
 
 
-      {/* FOOTER BUTTONS */}
       <div style={{ marginTop: 24, textAlign: 'right' }}>
         {current > 0 && (
           <Button style={{ marginRight: 8 }} onClick={() => setCurrent(0)}>
