@@ -22,9 +22,9 @@ export const permissionColumns = (
         },
         {
             title: "Name",
-            dataIndex: "name",
-            key: "name",
-            ...getColumnSearchProps("name"),
+            dataIndex: "username",
+            key: "username",
+            ...getColumnSearchProps("username"),
         },
         {
             title: "Email",
@@ -40,9 +40,9 @@ export const permissionColumns = (
         },
          {
             title: "ID no",
-            dataIndex: "idNo",
-            key: "idNo",
-            ...getColumnSearchProps("idNo"),
+            dataIndex: "userId",
+            key: "userId",
+            ...getColumnSearchProps("userId"),
         },
         {
             title: "User Type",

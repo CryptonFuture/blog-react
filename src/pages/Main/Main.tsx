@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
@@ -9,7 +9,6 @@ import {
   TeamOutlined,
   AppstoreOutlined,
   BellOutlined,
-  SafetyCertificateOutlined,
   UserOutlined,
   SettingOutlined,
   KeyOutlined,
@@ -17,54 +16,32 @@ import {
   PhoneOutlined,
   MessageOutlined,
   FileSearchOutlined,
-  LogoutOutlined
 } from '@ant-design/icons';
 import { Button, Layout, Dropdown, Avatar, Badge, Menu, theme } from 'antd';
-import { Switch } from "antd";
+import Footers  from '../../components/Footer/Footers'
 
-import { Dashboard } from '../Dashboard/Dashboard';
-import { Posts } from '../Post/Posts';
-import { Tags } from '../Tag/Tags';
-import { Pages } from '../Pages/Pages';
-import { Users } from '../Users/Users';
-import { Request } from '../Request/Request'
-import { ContactUs } from '../ContactUs/ContactUs'
-import './Main.css'
-import { Permission } from '../Permission/Permission';
+import { getSidebars } from '../../utils/services/sidebarService'
+import { Contents } from '../../components/Content/Contents'
+import { getIcon } from '../../components/Icon/Icon'
 
-const { Header, Sider, Content, Footer } = Layout
+
+const { Header, Sider, Content } = Layout
 
 export default function Main() {
   const [darkMode, setDarkMode] = useState(false);
+  const [menuItems, setMenuItems] = useState<any[]>([]);
 
   const COLORS = darkMode
     ? ["#69b1ff", "#95de64", "#ffd666", "#b37feb"]
     : ["#1677ff", "#52c41a", "#faad14", "#722ed1"];
+    
   const [collapsed, setCollapsed] = useState(true);
-  const [activeKey, setActiveKey] = useState("1");
+  const [activeKey, setActiveKey] = useState<string>("1");
 
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
-  //   const userMenu = (
-  //   <Menu
-  //     items={[
-  //       { key: "profile", label: "Profile" },
-  //       { key: "settings", label: "Settings" },
-  //       { key: "logout", label: "Logout" },
-  //     ]}
-  //     onClick={(e) => {
-  //       if (e.key === "logout") {
-  //         console.log("Logging out...");
-  //       } else if (e.key === "profile") {
-  //         console.log("Go to profile...");
-  //       } else if (e.key === "settings") {
-  //         console.log("Go to settings...");
-  //       }
-  //     }}
-  //   />
-  // );
 
   const userMenuItems = [
     { key: "profile", label: "Profile" },
@@ -72,36 +49,40 @@ export default function Main() {
     { key: "logout", label: "Logout" },
   ];
 
-  const renderComponent = () => {
-    switch (activeKey) {
-      case "1": return <Dashboard />;
-      case "2": return <Posts />;
-      case "3": return <Tags />;
-      case "4": return <Pages />;
-      case "5": return <Users />;
-      // case "6": return <Category />;
-      // case "7": return <Role />;
-      // case "8": return <Profile />;
-      // case "9": return <Settings />;
-      case "10": return <Permission />;
-      case "11": return <Request />;
-      case "12": return <ContactUs />;
-      // case "13": return <Comment />;
-      // case "14": return <Logs />;
-      // case "15": return <LogsConfig />;
-      default: return null;
+  const getSidebar = async () => {
+    try {
+      const res = await getSidebars()
+
+      const formattedData = res.data.map((item: any) => ({
+        key: item.key,
+        label: item.name,
+        icon: getIcon(item.name),
+      }))
+
+      setMenuItems(formattedData)
+
+    } catch (error) {
+      console.error("Failed to fetch posts:", error);
     }
-  };
+    finally {
+    }
+
+  }
+
+  useEffect(() => {
+    getSidebar()
+  }, []);
+
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
-      <Sider  width={260} collapsedWidth={80} style={{
+      <Sider width={260} collapsedWidth={80} style={{
         margin: 16,
         borderRadius: 12,
         overflow: 'hidden',
         background: '#001529',     // dark theme
         boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-      }}  trigger={null} collapsible collapsed={collapsed}>
+      }} trigger={null} collapsible collapsed={collapsed}>
         {/* <div className="demo-logo-vertical" />
         <div
           className="demo-logo-vertical"
@@ -120,32 +101,16 @@ export default function Main() {
         >
           MyApp
         </div> */}
-        
+
 
         <Menu
           theme="dark"
           mode="inline"
           selectedKeys={[activeKey]}
-          onClick={(e) => setActiveKey(e.key)}
-          items={[
-            { key: "1", icon: <DashboardOutlined />, label: "Dashboard" },
-            { key: "2", icon: <FileTextOutlined />, label: "Post" },
-            { key: "3", icon: <TagsOutlined />, label: "Tag" },
-            { key: "4", icon: <CopyOutlined />, label: "Pages" },
-            { key: "5", icon: <TeamOutlined />, label: "IAM" },
-            { key: "6", icon: <AppstoreOutlined />, label: "Category" },
-            // { key: "7", icon: <SafetyCertificateOutlined />, label: "Role" },
-            // { key: "8", icon: <UserOutlined />, label: "Profile" },
-            // { key: "9", icon: <SettingOutlined />, label: "Settings" },
-            { key: "10", icon: <KeyOutlined />, label: "OnBoarding" },
-            { key: "11", icon: <InboxOutlined />, label: "Request" },
-            { key: "12", icon: <PhoneOutlined />, label: "Contact Us" },
-            { key: "13", icon: <MessageOutlined />, label: "Comment" },
-            { key: "14", icon: <FileSearchOutlined />, label: "Logs" },
-            { key: "15", icon: <SettingOutlined />, label: "Logs Config" },
-          ]}
+          onClick={(e) => setActiveKey(String(e.key))}
+          items={menuItems}
         />
-      
+
       </Sider>
 
       <Layout>
@@ -156,7 +121,7 @@ export default function Main() {
             borderRadius: 50,
             overflow: "hidden",
             boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-            background:  colorBgContainer,
+            background: colorBgContainer,
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
@@ -213,28 +178,14 @@ export default function Main() {
 
         <Content
           style={{
-            // margin: '16px',
-            // padding: 24,
-            flex: 1,               // 🔥 important
-            // background: colorBgContainer,
+            flex: 1,
             borderRadius: borderRadiusLG,
           }}
         >
-          {renderComponent()}
+          <Contents activeKey={activeKey} />
         </Content>
 
-        <Footer
-          style={{
-            textAlign: "center",
-            margin: 16,
-            borderRadius: 12,
-            background: colorBgContainer,
-            boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
-          }}
-        >
-          © {new Date().getFullYear()} MyApp. All rights reserved.
-        </Footer>
-        
+        <Footers />
       </Layout>
     </Layout>
 
