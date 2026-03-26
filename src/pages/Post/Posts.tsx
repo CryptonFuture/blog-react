@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { SearchOutlined, MoreOutlined  } from '@ant-design/icons';
 import type { InputRef, TableColumnsType, TableColumnType } from 'antd';
-import { Button, Input, Space, Table, Tag, Divider, Dropdown, Menu } from 'antd';
+import { Button, Input, Space, message, Table, Tag, Divider, Dropdown, Menu } from 'antd';
 import type { FilterDropdownProps } from 'antd/es/table/interface';
 import Highlighter from 'react-highlight-words';
 import { instance } from '../../utils/axiosConfig';
@@ -71,7 +71,6 @@ const postActions: ActionItem<Post>[] = [
 
 export const Posts: React.FC<PostProps> = () => {
   const { getColumnSearchProps } = useColumnSearch<Post>();
-
   const [size, setSize] = useState<SizeType>('large'); 
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -109,8 +108,10 @@ export const Posts: React.FC<PostProps> = () => {
 
       getPublishedPost(pagination.current, pagination.pageSize)
 
-    } catch (error) {
-        console.error("Failed to fetch posts:", error);
+    } catch (error: any) {
+        console.log("Failed to fetch posts:", error.message);
+        message.destroy(); 
+        message.error(error.message)
     }
     finally {
         setLoading(false);

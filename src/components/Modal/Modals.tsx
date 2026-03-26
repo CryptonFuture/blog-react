@@ -12,7 +12,7 @@ import { Navigate, useNavigate } from 'react-router-dom'
 interface LoginData {
     email: string,
     password: string,
-    role: any
+    userType: any
 }
 
 declare global {
@@ -30,7 +30,7 @@ export default function Modals() {
     const [data, setData] = useState<LoginData>({
         email: "",
         password: "",
-        role: 1
+        userType: 'admin'
     })
 
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -98,12 +98,12 @@ export default function Modals() {
     const login = async () => {
         try {
             setOpen(false);
-            const res = await instance.post(`/login`, data)
+            const res = await instance.post(`/signin`, data)
 
             setData({
                 email: "",
                 password: "",
-                role: ""
+                userType: ""
             })
 
             toast.success(res.data.message)
@@ -113,6 +113,8 @@ export default function Modals() {
             localStorage.setItem('email', res.data.user.email)
             localStorage.setItem('tokenType', res.data.user.tokenType)
             localStorage.setItem('access_token', res.data.token)
+            localStorage.setItem('refreshToken', res.data.refreshToken)
+            localStorage.setItem('userType', res.data.user.userType)
 
 
             // const modalElement = document.getElementById('exampleModal');

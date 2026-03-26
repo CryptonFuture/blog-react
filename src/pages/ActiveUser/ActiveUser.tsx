@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { SearchOutlined, MoreOutlined  } from '@ant-design/icons';
 import type { InputRef, TableColumnsType, TableColumnType } from 'antd';
-import { Button, Input, Space, Table, Tag, Divider, Dropdown, Menu } from 'antd';
+import { Button, Input, Space, Table, Tag, message, Divider, Dropdown, Menu } from 'antd';
 import type { FilterDropdownProps } from 'antd/es/table/interface';
 import Highlighter from 'react-highlight-words';
 import { instance } from '../../utils/axiosConfig';
@@ -15,6 +15,7 @@ import { useColumnSearch } from "../../components/useColumn/useColumnSearch";
 import { activeUserColumns } from "../../components/useColumn/activeUserColumn";
 import type {  activeUser } from '../../utils/Interface/User'
 import type { ActionItem } from "../../components/Menu/ActionMenu";
+import { getActiveUser } from '../../utils/services/userService'
 
 type SizeType = ConfigProviderProps['componentSize'];
 
@@ -74,26 +75,51 @@ export const ActiveUser: React.FC<PostProps> = () => {
       const [size, setSize] = useState<SizeType>('large'); 
       const [data, setData] = useState<activeUser[]>([]);
       const [loading, setLoading] = useState<boolean>(false);
-      const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
       const [pagination, setPagination] = useState({
         current: 1,
         pageSize: 10,
         total: 0,
       })
     
-      const openModal = (): void => {
-        setIsModalOpen(true);
-      };
-    
-      const closeModal = (): void => {
-        setIsModalOpen(false);
-      };
-    
-      const { styles } = useStyle();
+     
+    const { styles } = useStyle();
+
+  const getActiveUsers = async (
+    page = pagination.current,
+    limit = pagination.pageSize
+  ) => {
+    setLoading(true);
+    try {
+      const res = await getActiveUser(page, limit)
+      setData(res.data)
+
+      setPagination({
+        current: pagination.current,
+        pageSize: pagination.pageSize,
+        total: pagination.total,
+      })
+
+      getActiveUser(pagination.current, pagination.pageSize)
+
+    } catch (error: any) {
+      console.error("Failed to fetch posts:", error);
+      message.destroy(); 
+      message.error(error.message)
+    }
+    finally {
+      setLoading(false);
+    }
+
+  }
 
     const handleTableChange = (paginationInfo: any) => {
-        // getPost(paginationInfo.current, paginationInfo.pageSize);
+        getActiveUsers(paginationInfo.current, paginationInfo.pageSize);
     };
+
+       useEffect(() => {
+            getActiveUsers()
+      }, []);
+    
 
   return (
     <div>
