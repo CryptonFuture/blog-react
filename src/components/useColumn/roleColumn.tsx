@@ -21,16 +21,16 @@ export const roleColumns = (
                 (currentPage - 1) * pageSize + index + 1,
         },
         {
-            title: "Name",
-            dataIndex: "name",
-            key: "name",
-            ...getColumnSearchProps("name"),
+            title: "User Name",
+            dataIndex: "userName",
+            key: "userName",
+            ...getColumnSearchProps("userName"),
         },
         {
-            title: "Tag",
-            dataIndex: "tag",
-            key: "tag",
-            ...getColumnSearchProps("tag"),
+            title: "Role Name",
+            dataIndex: "roleName",
+            key: "roleName",
+            ...getColumnSearchProps("roleName"),
         },
        
         {

@@ -5,7 +5,7 @@ import moment from "moment";
 import { ActionMenu, type ActionItem } from "../Menu/ActionMenu";
 import type { Post } from '../../utils/Interface/Post'
 
-export const activeUserColumns = (
+export const logsColumn = (
   getColumnSearchProps: any,
   currentPage: number,
   pageSize: number,
@@ -21,45 +21,47 @@ export const activeUserColumns = (
                 (currentPage - 1) * pageSize + index + 1,
         },
         {
-            title: "User Name",
-            dataIndex: "userName",
-            key: "userName",
-            ...getColumnSearchProps("userName"),
-            render: (_: any, record: any) =>
-                `${record.firstname || ""} ${record.lastname || ""}`.trim()
+            title: "Username",
+            dataIndex: "name",
+            key: "name",
+            ...getColumnSearchProps("name"),
         },
         {
-            title: "Email",
-            dataIndex: "email",
-            key: "email",
-            ...getColumnSearchProps("email"),
-        },
-        {
-            title: "Phone No",
-            dataIndex: "phone",
-            key: "phone",
-            ...getColumnSearchProps("phone"),
-              render: (phone: any) => phone ? phone : '-----------'
+            title: "Login Time",
+            dataIndex: "login_time",
+            key: "login_time",
+            render: (v: string) =>
+        v
+            ? new Date(v).toLocaleString("en-US", {
+                  month: "2-digit",
+                  day: "2-digit",
+                  year: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  hour12: true,
+              })
+            : "-",
+            ...getColumnSearchProps("login_time"),
         },
 
         {
-            title: "Address",
-            dataIndex: "address",
-            key: "address",
-            ...getColumnSearchProps("address"),
-            render: (address: any) => address ? address : '-----------'
+            title: "Logout Time",
+            dataIndex: "logout_time",
+            key: "logout_time",
+            render: (v: string) =>
+        v
+            ? new Date(v).toLocaleString("en-US", {
+                  month: "2-digit",
+                  day: "2-digit",
+                  year: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  hour12: true,
+              })
+            : "-",
+            ...getColumnSearchProps("logout_time"),
         },
-
-        {
-            title: "Status",
-            dataIndex: "active",
-            key: "active",
-            render: (v: boolean) => (
-                <Tag color={v ? "green" : "red"}>
-                    {v ? "Active" : "InActive"}
-                </Tag>
-            ),
-        },
+       
         {
             title: "Created At",
             dataIndex: "createdAt",

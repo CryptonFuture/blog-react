@@ -7,6 +7,7 @@ import { Users } from "../../pages/Users/Users";
 import { Permission } from "../../pages/Permission/Permission";
 import { Request } from "../../pages/Request/Request";
 import { ContactUs } from "../../pages/ContactUs/ContactUs";
+import { Logs } from '../../pages/Logs/Logs';
 
 export const Contents = ({ activeKey }: { activeKey: string }) => {
   console.log(activeKey, 'activeKey');
@@ -23,13 +24,16 @@ export const Contents = ({ activeKey }: { activeKey: string }) => {
       case "4":
         return <Pages />;
       case "5":
-        return <Users />;
+        return <Users />
+      case "6":
+        return <Logs />
       case "10":
         return <Permission />;
       case "11":
         return <Request />;
       case "12":
         return <ContactUs />;
+      
       default:
         return <div>Select a menu</div>;
     }

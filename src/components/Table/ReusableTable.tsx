@@ -45,7 +45,9 @@ export const ReusableTable = <T extends object>({
         total: pagination.total,
         showSizeChanger: true,
         pageSizeOptions: ["5", "10", "20", "50"],
-        showTotal: (total) => `Total ${total} records`,
+        // showTotal: (total) => `Total ${total} records`,
+        showTotal: (total, range) =>
+    `${range[0]}-${range[1]} of ${total} records`,
         onChange: (page, pageSize) => {
           onChange(
             { ...pagination, current: page, pageSize },

@@ -222,41 +222,41 @@ const handleFullAccessChange = (id: any, value: any) => {
   );
 };
 
-const fetchSidebarPermissions = async () => {
-  try {
-    const res = await getSidebars();
+// const fetchSidebarPermissions = async () => {
+//   try {
+//     const res = await getSidebars();
 
-    const hiddenModules = [
-      'logs',
-      'logs configuration',
-      'dashboard',
-      'iam',
-      'onboarding',
-    ];
+//     const hiddenModules = [
+//       'logs',
+//       'logs configuration',
+//       'dashboard',
+//       'iam',
+//       'onboarding',
+//     ];
 
-    const formattedPermissions = res.data
-      .filter((item: any) =>
-        !hiddenModules.includes(item.name?.toLowerCase())
-      )
-      .map((item: any) => ({
-        id: item.id,
-        group: item.name,
-        add: false,
-        update: false,
-        view: false,
-        delete: false,
-        full: false,
-      }));
+//     const formattedPermissions = res.data
+//       .filter((item: any) =>
+//         !hiddenModules.includes(item.name?.toLowerCase())
+//       )
+//       .map((item: any) => ({
+//         id: item.id,
+//         group: item.name,
+//         add: false,
+//         update: false,
+//         view: false,
+//         delete: false,
+//         full: false,
+//       }));
 
-    setPermissionData(formattedPermissions);
-  } catch (error) {
-    console.error('Failed to load sidebar permissions', error);
-  }
-};
+//     setPermissionData(formattedPermissions);
+//   } catch (error) {
+//     console.error('Failed to load sidebar permissions', error);
+//   }
+// };
 
-useEffect(() => {
-  fetchSidebarPermissions()
-}, [])
+// useEffect(() => {
+//   fetchSidebarPermissions()
+// }, [])
 
 
 

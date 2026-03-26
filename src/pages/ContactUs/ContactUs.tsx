@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { SearchOutlined, MoreOutlined } from '@ant-design/icons';
 import type { InputRef, TableColumnsType, TableColumnType } from 'antd';
-import { Button, Input, Space, Table, Divider, Tag, Dropdown, Menu } from 'antd';
+import { Button, Input, Space, Table, Divider, message, Tag, Dropdown, Menu } from 'antd';
 import type { FilterDropdownProps } from 'antd/es/table/interface';
 import Highlighter from 'react-highlight-words';
 import { instance } from '../../utils/axiosConfig';
@@ -138,8 +138,10 @@ export const ContactUs: React.FC<PostProps> =  () => {
                 total: res.data.pagination.totalRecords,
               });
         
-            } catch (error) {
+            } catch (error: any) {
               console.error("Failed to fetch tags:", error);
+              message.destroy()
+              message.error(error.message)
             }
             finally {
               setLoading(false);
